@@ -1,0 +1,44 @@
+Container(
+          margin: const EdgeInsets.all(5),
+          width: double.infinity,
+          height: double.infinity,
+          child: Column(
+            children: [
+              SizedBox(
+                height: 60,
+                width: double.infinity,
+                child: ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: items.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          current = index;
+                        });
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        child: Container(
+                          margin: const EdgeInsets.all(10), 
+                          width: 80,
+                          height: 45,
+                          decoration:  BoxDecoration(
+                            color: current == index ? const Color.fromARGB(255, 144, 209, 171) : const Color.fromARGB(244, 142, 142, 142),
+                          ),
+                          child: Center(
+                            child: Text(
+                              items[index],
+                              style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
