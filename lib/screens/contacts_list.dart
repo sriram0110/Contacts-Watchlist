@@ -12,24 +12,20 @@ class ContactsList extends StatefulWidget {
   State<ContactsList> createState() => _ContactsListState();
 }
 
-class _ContactsListState extends State<ContactsList> with SingleTickerProviderStateMixin {
-  TabController? _tabController;
+class _ContactsListState extends State<ContactsList> {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
     BlocProvider.of<ContactBloc>(context).add(FetchContacts());
     BlocProvider.of<ContactBloc>(context).add(InitialSortingEvent());
-
   }
 
-  @override
-  void dispose() {
-    _tabController!.dispose();
-    super.dispose();
-  
-    // BlocProvider.of<ContactBloc>(context).close();
-  }
+  // @override
+  // void dispose() {
+  //   super.dispose();
+
+  //   // BlocProvider.of<ContactBloc>(context).close();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -44,14 +40,12 @@ class _ContactsListState extends State<ContactsList> with SingleTickerProviderSt
               style: TextStyle(color: Colors.black),
             ),
           ),
-          bottom:  TabBar(
+          bottom: const TabBar(
             indicatorColor: Colors.blue,
             labelColor: Colors.black,
-            controller: _tabController,
-            tabs: const [
+            tabs: [
               Tab(
                 text: 'Group 1',
-                
               ),
               Tab(
                 text: 'Group 2',
@@ -63,7 +57,6 @@ class _ContactsListState extends State<ContactsList> with SingleTickerProviderSt
           ),
         ),
         body: TabBarView(
-          controller: _tabController,
           children: [
             Container(
                 height: double.infinity,

@@ -9,4 +9,5 @@ class Contact {
   factory Contact.fromJson(Map<String, dynamic> json) {
     return Contact(json['id'], json['name'], json['Contacts'], json['url']);
   }
+  
 }

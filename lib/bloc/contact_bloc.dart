@@ -17,18 +17,15 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
   ContactBloc(this.contactService) : super(ContactInitial()) {
 
     on<InitialSortingEvent>((event, emit) {
-      // emit(SortedById(isSortById));
+      emit(SortedById(isSortById));
       emit(SortedByName(isSortByName));
-
     });
-
 
     on<FetchContacts>(
       (event, emit) async {
-      
         emit(ContactLoading());
         try {
-           _contacts = await contactService.getContacts();
+          _contacts = await contactService.getContacts();
           emit(
             ContactLoaded(_contacts),
           );
@@ -40,37 +37,37 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
       },
     );
 
-    // on<SortById>((event, emit) {
+    on<SortById>((event, emit) {
+      isSortById = !isSortById;
 
-      
-    //   isSortById = false;
-    //     final List<dynamic> contactsById = List.from(_contacts);
-    //     // final String id = contactsById['id'] as ;
-    //   contactsById.sort((a,b)
-    //   {
-    //     return isSortById ? b['id'].compareTo(a['id']) : a['id'].compareTo(b['id']);
-    //   });
-    //  emit(ContactLoaded(contactsById as List<Contact>));
-    //  isSortById = !isSortById;
-    //  emit(SortedById(isSortById));
+      emit(SortedById(isSortById));
 
-       
-
-    // });
+      final  contactsSortedById = List<Contact>.from(_contacts);
+      // final String id = contactsById['id'] as ;
+      // contactsSortedById.map((contact) => int.parse(contact.id)).toList(growable: false).sort();
+      // List<Contact> result = isSortById ? contactsSortedById : _contacts;
+      contactsSortedById.sort((a, b) {
+        int numberA = int.parse(a.id);
+        int numberB = int.parse(b.id);
+        return isSortById ? numberB.compareTo(numberA) : numberA.compareTo(numberB);
+      });
+      emit(ContactLoaded( contactsSortedById));
+      // isSortById = !isSortById;
+    });
 
     on<SortByName>((event, emit) {
+      isSortByName = !isSortByName;
 
-     emit(SortedByName(!isSortByName));
-     isSortByName = !isSortByName;
-  
+      emit(SortedByName(isSortByName));
+
       final contactsSortedByName = List<Contact>.from(_contacts);
-      contactsSortedByName.sort((a,b)
-      {
-        return isSortByName ? a.name.compareTo(b.name) : b.name.compareTo(a.name);
+      contactsSortedByName.sort((a, b) {
+        return isSortByName
+            ? b.name.compareTo(a.name)
+            : a.name.compareTo(b.name);
       });
-     emit(ContactLoaded(contactsSortedByName));
-     isSortByName = !isSortByName;
-
+      emit(ContactLoaded(contactsSortedByName));
+      // isSortByName = !isSortByName;
     });
   }
 }

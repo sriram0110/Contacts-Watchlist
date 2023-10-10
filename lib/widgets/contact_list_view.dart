@@ -3,15 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/contact_bloc.dart';
 
-class ContactListView extends StatefulWidget   {
+class ContactListView extends StatefulWidget {
   const ContactListView({super.key});
 
   @override
   State<ContactListView> createState() => _ContactListViewState();
 }
 
-class _ContactListViewState extends State<ContactListView> with AutomaticKeepAliveClientMixin {
-
+class _ContactListViewState extends State<ContactListView>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -22,16 +22,26 @@ class _ContactListViewState extends State<ContactListView> with AutomaticKeepAli
           Expanded(
             child: GestureDetector(
               onTap: () {
-                // BlocProvider.of<ContactBloc>(context).add(SortById());
+                BlocProvider.of<ContactBloc>(context).add(SortById());
               },
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Id',
-                    style: TextStyle(fontSize: 14.0),
+                    style: TextStyle(fontSize: 14.0), 
                   ),
-                  Icon(Icons.arrow_upward_rounded)
+                  BlocBuilder<ContactBloc, ContactState>(
+                    buildWhen: (previous, current) => current is SortedById,
+                    builder: (context, state) {
+                      if (state is SortedById) {
+                        return state.sortIdAscending
+                            ? const Icon(Icons.arrow_downward_rounded, )
+                            : const Icon(Icons.arrow_upward_rounded);
+                      }
+                      return Container();
+                    },
+                  ),
                 ],
               ),
             ),
@@ -50,12 +60,12 @@ class _ContactListViewState extends State<ContactListView> with AutomaticKeepAli
                     style: TextStyle(fontSize: 14.0),
                   ),
                   BlocBuilder<ContactBloc, ContactState>(
-                    buildWhen: (previous, current) => current is SortedByName  ,
+                    buildWhen: (previous, current) => current is SortedByName,
                     builder: (context, state) {
                       if (state is SortedByName) {
                         return state.sortNameAscending
-                            ? const Icon(Icons.arrow_upward_rounded)
-                            : const Icon(Icons.arrow_downward_rounded);
+                            ? const Icon(Icons.arrow_downward_rounded)
+                            : const Icon(Icons.arrow_upward_rounded);
                       }
                       return Container();
                     },
@@ -65,9 +75,6 @@ class _ContactListViewState extends State<ContactListView> with AutomaticKeepAli
             ),
           ),
         ],
-      ),
-      const SizedBox(
-        height: 10.0,
       ),
       BlocBuilder<ContactBloc, ContactState>(
         // buildWhen: (context, state) =>
@@ -81,19 +88,22 @@ class _ContactListViewState extends State<ContactListView> with AutomaticKeepAli
             );
           } else if (state is ContactLoaded) {
             return Expanded(
-              child: ListView.builder(
-                itemCount: state.contacts.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      title: Text(state.contacts[index].name),
-                      subtitle: Text(state.contacts[index].contacts),
-                      // leading: CircleAvatar(
-                      //   // backgroundImage: NetworkImage(state.contacts[index].url),
-                      // ),
-                    ),
-                  );
-                },
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ListView.builder(
+                  itemCount: state.contacts.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      child: ListTile(
+                        title: Text(state.contacts[index].name),
+                        subtitle: Text(state.contacts[index].contacts),
+                        // leading: CircleAvatar(
+                        //   // backgroundImage: NetworkImage(state.contacts[index].url),
+                        // ),
+                      ),
+                    );
+                  },
+                ),
               ),
             );
           } else if (state is ContactError) {
@@ -106,12 +116,7 @@ class _ContactListViewState extends State<ContactListView> with AutomaticKeepAli
       ),
     ]);
   }
-  
-  @override
-  bool get wantKeepAlive => true;
 
   @override
-  void updateKeepAlive() {
-    super.updateKeepAlive();
-  }
+  bool get wantKeepAlive => true;
 }
