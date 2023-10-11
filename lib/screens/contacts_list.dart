@@ -25,11 +25,16 @@ class _ContactsListState extends State<ContactsList> {
             ),
           ),
           bottom: const TabBar(
+            labelStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold), 
+            unselectedLabelStyle: TextStyle(fontSize: 18.0, fontWeight: FontWeight.normal),
             indicatorColor: Colors.blue,
             labelColor: Colors.black,
+
             tabs: [
               Tab(
+
                 text: 'Group 1',
+
               ),
               Tab(
                 text: 'Group 2',

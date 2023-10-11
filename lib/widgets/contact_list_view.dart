@@ -12,14 +12,14 @@ class ContactListView extends StatefulWidget {
 
 class _ContactListViewState extends State<ContactListView>
     with AutomaticKeepAliveClientMixin {
-      @override
+  @override
   void initState() {
     super.initState();
     BlocProvider.of<ContactBloc>(context).add(FetchContacts());
-    BlocProvider.of<ContactBloc>(context).add(InitialIDSortingEvent()); 
+    BlocProvider.of<ContactBloc>(context).add(InitialIDSortingEvent());
     BlocProvider.of<ContactBloc>(context).add(InitialNameSortingEvent());
-
   }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -36,16 +36,25 @@ class _ContactListViewState extends State<ContactListView>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'ID', 
-                    style: TextStyle(fontSize: 14.0), 
+                    'ID',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Color.fromARGB(255, 106, 107, 107),
+                    ),
                   ),
-                  BlocBuilder<ContactBloc, ContactState>( 
-                    buildWhen: (previous, current) => current is SortedById ,
+                  BlocBuilder<ContactBloc, ContactState>(
+                    buildWhen: (previous, current) => current is SortedById,
                     builder: (context, state) {
                       if (state is SortedById) {
                         return state.sortIdAscending
-                            ? const Icon(Icons.arrow_downward_rounded, )
-                            : const Icon(Icons.arrow_upward_rounded);
+                            ? const Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                color: Color.fromARGB(255, 114, 120, 127),
+                              )
+                            : const Icon(
+                                Icons.keyboard_arrow_up_rounded,
+                                color: Color.fromARGB(255, 114, 120, 127),
+                              );
                       }
                       return Container();
                     },
@@ -63,17 +72,26 @@ class _ContactListViewState extends State<ContactListView>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                  const Text( 
                     'Name',
-                    style: TextStyle(fontSize: 14.0),
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Color.fromARGB(255, 106, 107, 107),
+                    ),
                   ),
                   BlocBuilder<ContactBloc, ContactState>(
                     buildWhen: (previous, current) => current is SortedByName,
                     builder: (context, state) {
                       if (state is SortedByName) {
                         return state.sortNameAscending
-                            ? const Icon(Icons.arrow_downward_rounded)
-                            : const Icon(Icons.arrow_upward_rounded);
+                            ? const Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                color: Color.fromARGB(255, 114, 120, 127),
+                              )
+                            : const Icon(
+                                Icons.keyboard_arrow_up_rounded,
+                                color: Color.fromARGB(255, 114, 120, 127),
+                              );
                       }
                       return Container();
                     },
@@ -103,8 +121,14 @@ class _ContactListViewState extends State<ContactListView>
                   itemBuilder: (context, index) {
                     return Card(
                       child: ListTile(
-                        title: Text(state.contacts[index].name),
-                        subtitle: Text(state.contacts[index].contacts),
+                        title: Text(
+                          state.contacts[index].name,
+                          style: const TextStyle(fontSize: 18.0),
+                        ),
+                        subtitle: Text(
+                          state.contacts[index].contacts,
+                          style: const TextStyle(fontSize: 16.0),
+                        ),
                         // leading: CircleAvatar(
                         //   // backgroundImage: NetworkImage(state.contacts[index].url),
                         // ),
