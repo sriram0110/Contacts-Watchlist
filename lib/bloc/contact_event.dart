@@ -8,7 +8,10 @@ abstract class ContactEvent extends Equatable {
 
 class FetchContacts extends ContactEvent {}
 
-class InitialSortingEvent extends ContactEvent {}
+class InitialIDSortingEvent extends ContactEvent {}
+
+class InitialNameSortingEvent extends ContactEvent {}
+
 
 class SortById extends ContactEvent {}
 

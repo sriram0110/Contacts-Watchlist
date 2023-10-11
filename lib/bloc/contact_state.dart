@@ -8,6 +8,7 @@ class ContactState extends Equatable {
 
 class ContactInitial extends ContactState {} //indicates the bloc just created
 
+
 class ContactLoading extends ContactState {}
 
 class ContactLoaded extends ContactState {

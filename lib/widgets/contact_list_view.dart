@@ -12,6 +12,14 @@ class ContactListView extends StatefulWidget {
 
 class _ContactListViewState extends State<ContactListView>
     with AutomaticKeepAliveClientMixin {
+      @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<ContactBloc>(context).add(FetchContacts());
+    BlocProvider.of<ContactBloc>(context).add(InitialIDSortingEvent()); 
+    BlocProvider.of<ContactBloc>(context).add(InitialNameSortingEvent());
+
+  }
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -28,11 +36,11 @@ class _ContactListViewState extends State<ContactListView>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'Id',
+                    'ID', 
                     style: TextStyle(fontSize: 14.0), 
                   ),
-                  BlocBuilder<ContactBloc, ContactState>(
-                    buildWhen: (previous, current) => current is SortedById,
+                  BlocBuilder<ContactBloc, ContactState>( 
+                    buildWhen: (previous, current) => current is SortedById ,
                     builder: (context, state) {
                       if (state is SortedById) {
                         return state.sortIdAscending
@@ -77,14 +85,14 @@ class _ContactListViewState extends State<ContactListView>
         ],
       ),
       BlocBuilder<ContactBloc, ContactState>(
-        // buildWhen: (context, state) =>
-        //     state is ContactLoading ||
-        //     state is ContactLoaded ||
-        //     state is ContactError,
+        buildWhen: (context, state) =>
+            state is ContactLoading ||
+            state is ContactLoaded ||
+            state is ContactError,
         builder: (context, state) {
           if (state is ContactLoading) {
             return const Center(
-              child: LinearProgressIndicator(),
+              child: CircularProgressIndicator(color: Colors.blue),
             );
           } else if (state is ContactLoaded) {
             return Expanded(

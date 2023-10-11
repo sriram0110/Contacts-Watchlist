@@ -15,11 +15,15 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
   List<Contact> _contacts = [];
 
   ContactBloc(this.contactService) : super(ContactInitial()) {
-
-    on<InitialSortingEvent>((event, emit) {
+    on<InitialIDSortingEvent>((event, emit) {
       emit(SortedById(isSortById));
-      emit(SortedByName(isSortByName));
     });
+
+    on<InitialNameSortingEvent>(
+      (event, emit) {
+        emit(SortedByName(isSortByName));
+      },
+    );
 
     on<FetchContacts>(
       (event, emit) async {
@@ -42,16 +46,18 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
 
       emit(SortedById(isSortById));
 
-      final  contactsSortedById = List<Contact>.from(_contacts);
+      final contactsSortedById = List<Contact>.from(_contacts);
       // final String id = contactsById['id'] as ;
       // contactsSortedById.map((contact) => int.parse(contact.id)).toList(growable: false).sort();
       // List<Contact> result = isSortById ? contactsSortedById : _contacts;
       contactsSortedById.sort((a, b) {
         int numberA = int.parse(a.id);
         int numberB = int.parse(b.id);
-        return isSortById ? numberB.compareTo(numberA) : numberA.compareTo(numberB);
+        return isSortById
+            ? numberB.compareTo(numberA)
+            : numberA.compareTo(numberB);
       });
-      emit(ContactLoaded( contactsSortedById));
+      emit(ContactLoaded(contactsSortedById));
       // isSortById = !isSortById;
     });
 

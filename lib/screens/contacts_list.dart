@@ -1,9 +1,7 @@
-import 'package:contacts_watchlist/bloc/contact_bloc.dart';
 import 'package:contacts_watchlist/widgets/contact_list_view.dart';
 import 'package:contacts_watchlist/widgets/second_group.dart';
 import 'package:contacts_watchlist/widgets/third_group.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ContactsList extends StatefulWidget {
   const ContactsList({super.key});
@@ -13,20 +11,6 @@ class ContactsList extends StatefulWidget {
 }
 
 class _ContactsListState extends State<ContactsList> {
-  @override
-  void initState() {
-    super.initState();
-    BlocProvider.of<ContactBloc>(context).add(FetchContacts());
-    BlocProvider.of<ContactBloc>(context).add(InitialSortingEvent());
-  }
-
-  // @override
-  // void dispose() {
-  //   super.dispose();
-
-  //   // BlocProvider.of<ContactBloc>(context).close();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
