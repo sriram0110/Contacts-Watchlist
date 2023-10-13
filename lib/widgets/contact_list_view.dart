@@ -110,7 +110,7 @@ class _ContactListViewState extends State<ContactListView>
         builder: (context, state) {
           if (state is ContactLoading) {
             return const Center(
-              child: CircularProgressIndicator(color: Colors.blue),
+              child: CircularProgressIndicator(),
             );
           } else if (state is ContactLoaded) {
             return Expanded(

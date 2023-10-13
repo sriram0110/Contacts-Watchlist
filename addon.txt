@@ -1,44 +1,139 @@
-Container(
-          margin: const EdgeInsets.all(5),
-          width: double.infinity,
-          height: double.infinity,
-          child: Column(
-            children: [
-              SizedBox(
-                height: 60,
-                width: double.infinity,
-                child: ListView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: items.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          current = index;
-                        });
-                      },
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        child: Container(
-                          margin: const EdgeInsets.all(10), 
-                          width: 80,
-                          height: 45,
-                          decoration:  BoxDecoration(
-                            color: current == index ? const Color.fromARGB(255, 144, 209, 171) : const Color.fromARGB(244, 142, 142, 142),
-                          ),
-                          child: Center(
-                            child: Text(
-                              items[index],
-                              style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
+Unit Testing
+
+import 'package:contacts_watchlist/utils/services/contact_service.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+// import 'package:http/testing.dart';
+// import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+
+
+class MockClient extends Mock implements http.Client {}
+
+// Generate a MockClient using the Mockito package.
+// Create new instances of this class in each test.
+// @GenerateMocks([http.Client])
+void main() {
+  group('fetchAlbum', () {
+    test('returns an Album if the http call completes successfully', () async {
+      final client = MockClient();
+      final contactService = ContactService();
+      const  responseBody = '[{"id": "1", "name": "name 1"}]';
+      // Use Mockito to return a successful response when it calls the
+      // provided http.Client.
+      when(client
+              .get(Uri.parse('http://5e53a76a31b9970014cf7c8c.mockapi.io/msf/getContacts')))
+          .thenAnswer((_) async =>
+              http.Response(responseBody, 200));
+
+              final contacts = await contactService.getContacts();
+
+      expect(contacts, responseBody);
+    });
+
+    // test('throws an exception if the http call completes with an error', () {
+    //   final client = MockClient();
+
+    //   // Use Mockito to return an unsuccessful response when it calls the
+    //   // provided http.Client.
+    //   when(client
+    //           .get(Uri.parse('https://jsonplaceholder.typicode.com/albums/1')))
+    //       .thenAnswer((_) async => http.Response('Not Found', 404));
+
+    //   expect(fetchAlbum(client), throwsException);
+    // });
+  });
+}
+
+
+
+
+//Testing Bloc
+
+import 'package:contacts_watchlist/utils/services/contact_service.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+import 'package:contacts_watchlist/bloc/contact_bloc.dart';
+import 'package:http/http.dart' as http ;
+// Create a mock class for ContactService
+class MockContactService extends Mock implements ContactService {}
+
+void main() {
+  group('API Calls', () {
+    // Initialize the Bloc and mock service
+    ContactBloc? contactBloc;
+    MockContactService? mockContactService;
+    dynamic responseBody = '[{"id": "1", "name": "name 1"}]';
+
+
+    setUp(() {
+      mockContactService = MockContactService();
+      contactBloc = ContactBloc(mockContactService!);
+    });
+
+    tearDown(() {
+      contactBloc!.close();
+    });
+
+    test('emits ContactLoaded after FetchContacts event', () async {
+      // final List<Contact> mockContacts = [
+      //   Contact(
+      //     '1',
+      //     'name 1',
+      //     "1-355-184-1639",
+      //     "https://s3.amazonaws.com/uifaces/faces/twitter/jpscribbles/128.jpg",
+      //   ),
+      //   Contact('2', 'name 2', "262.054.8860 x845",
+      //       "https://s3.amazonaws.com/uifaces/faces/twitter/matt3224/128.jpg"),
+      // ];
+      when(mockContactService!.getContacts())
+          .thenAnswer((_) async => http.Response(responseBody, 200));
+
+      contactBloc!.add(FetchContacts());
+
+      expectLater(
+        contactBloc,
+        emitsInOrder([
+          ContactLoading(),
+        ]),
+      );
+    });
+  });
+}
+
+
+
+//Testing own
+import 'package:contacts_watchlist/utils/services/contact_service.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+import 'package:http/http.dart' as http;
+// import 'package:contacts_watchlist/bloc/contact_bloc.dart';
+
+// class MockContactBloc extends Mock implements ContactBloc {}
+class MockContactService extends Mock implements ContactService {}
+
+void main() {
+  // group('ContactListView', () {
+    //Arrange
+    late MockContactService mockContactService;
+    late ContactService contactService;
+    dynamic responseBody = '[{"id": "1", "name": "name 1"}]';
+
+    setUp(() {
+      mockContactService = MockContactService();
+      contactService = ContactService();
+    });
+
+    //Act
+    test('getContacts returns response body as String if successful', () async {
+      when(mockContactService.getContacts())
+          .thenAnswer((_) async => Future.value(http.Response(responseBody, 200)));
+
+      final actualResponse = await contactService.getContacts();
+
+      expectLater(actualResponse, responseBody);
+    });
+  // });
+}
+

@@ -32,9 +32,7 @@ class _ContactsListState extends State<ContactsList> {
 
             tabs: [
               Tab(
-
                 text: 'Group 1',
-
               ),
               Tab(
                 text: 'Group 2',

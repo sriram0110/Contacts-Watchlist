@@ -1,6 +1,10 @@
+// import 'dart:convert';
+// import 'dart:ffi';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
 import '../models/contact.dart';
 import '../utils/services/contact_service.dart';
@@ -29,7 +33,13 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
       (event, emit) async {
         emit(ContactLoading());
         try {
-          _contacts = await contactService.getContacts();
+          // _contacts = await contactService.getContacts();
+          final response = await contactService.getContacts(Client());
+            final List<Contact> contacts = contactFromJson(response);
+            _contacts = contacts;
+          // final data = json.decode(response); //string to object
+          // _contacts = data.map((json) => Contact.fromJson(json)).toList();  //json object to dart model
+
           emit(
             ContactLoaded(_contacts),
           );
@@ -47,9 +57,7 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
       emit(SortedById(isSortById));
 
       final contactsSortedById = List<Contact>.from(_contacts);
-      // final String id = contactsById['id'] as ;
-      // contactsSortedById.map((contact) => int.parse(contact.id)).toList(growable: false).sort();
-      // List<Contact> result = isSortById ? contactsSortedById : _contacts;
+
       contactsSortedById.sort((a, b) {
         int numberA = int.parse(a.id);
         int numberB = int.parse(b.id);
