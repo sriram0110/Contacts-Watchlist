@@ -20,7 +20,7 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
 
   ContactBloc(this.contactService) : super(ContactInitial()) {
     on<InitialIDSortingEvent>((event, emit) {
-      emit(SortedById(isSortById));
+      emit(SortedById(isSortById)); 
     });
 
     on<InitialNameSortingEvent>(

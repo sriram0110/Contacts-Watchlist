@@ -137,3 +137,146 @@ void main() {
   // });
 }
 
+
+
+//bloc test
+
+
+import 'package:bloc_test/bloc_test.dart';
+import 'package:contacts_watchlist/bloc/contact_bloc.dart';
+import 'package:contacts_watchlist/models/contact.dart';
+import 'package:contacts_watchlist/utils/services/contact_service.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+import 'contact_bloc_test.mocks.dart';
+
+
+class MockContactService extends Mock implements ContactService {}
+
+void main()
+{
+  group('Contact Bloc ', () { 
+
+    late MockContactService mockContactService;
+    late ContactBloc contactBloc;
+
+    setUpAll(() {
+      mockContactService = MockContactService();
+      contactBloc = ContactBloc(mockContactService);
+    });
+
+    blocTest<ContactBloc, ContactState>(
+      'emits [MyState] when MyEvent is added.',
+      build: () => ContactBloc(mockContactService),
+      act: (bloc) => bloc.add(MyEvent),
+      expect: () => const <ContactState>[MyState],
+    );
+
+
+  });
+}
+
+
+//bloc test expect expectLater
+
+
+import 'package:contacts_watchlist/bloc/contact_bloc.dart';
+import 'package:contacts_watchlist/models/contact.dart';
+import 'package:contacts_watchlist/utils/services/contact_service.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  group('ContactBloc', () {
+    test('Sorting by Name', () {
+      final contactBloc = ContactBloc(ContactService());
+      final List<Contact> unsortedContacts = [
+        Contact('2',  'Sri', '672716737', 'image1'),
+        Contact( '1',  'Ram', '676287939', 'image2'),
+        Contact( '3',  'Raj', '6767268682', 'image3' ),
+      ];
+
+      final List<Contact> expectedSortedContacts = [
+        Contact( '3',  'Raj', '6767268682', 'image3' ),
+        Contact( '1',  'Ram', '676287939', 'image2'),
+        Contact('2',  'Sri', '672716737', 'image1'),
+        
+      ];
+
+      // contactBloc.add(FetchContacts()); // Simulating fetching contacts
+      // contactBloc.add(InitialNameSortingEvent()); // Initial sorting
+
+      contactBloc.add(SortByName()); // Trigger sorting by name
+
+    expectLater(
+        contactBloc,
+        emitsInOrder([
+          // isA<ContactLoaded>(), // ContactLoaded state after initial fetch
+          SortedByName(), // SortedByName state after sorting by name
+          ContactLoaded(expectedSortedContacts), // Expected sorted contacts
+        ]),
+      );
+    });
+
+    // test('Sorting by ID', () {
+    //   final contactBloc = ContactBloc(ContactService());
+    //   final List<Contact> unsortedContacts = [
+    //     Contact('2', 'John'),
+    //     Contact('1', 'Jane'),
+    //     Contact('3',  'Alice'),
+    //   ];
+
+    //   final List<Contact> expectedSortedContacts = [
+    //     Contact('1',  'Jane'),
+    //     Contact( '2',  'John'),
+    //     Contact('3',  'Alice'),
+    //   ];
+
+    //   contactBloc.add(FetchContacts()); // Simulating fetching contacts
+    //   contactBloc.add(InitialIDSortingEvent()); // Initial sorting
+
+    //   contactBloc.add(SortById()); // Trigger sorting by ID
+
+    //   expectLater(
+    //     contactBloc,
+    //     emitsInOrder([
+    //       isA<ContactLoaded>(), // ContactLoaded state after initial fetch
+    //       isA<SortedById>(), // SortedById state after sorting by ID
+    //       ContactLoaded(expectedSortedContacts), // Expected sorted contacts
+    //     ]),
+    //   );
+    // });
+  });
+}
+
+
+//bloc testing build, act, expect
+
+import 'package:contacts_watchlist/bloc/contact_bloc.dart';
+import 'package:contacts_watchlist/utils/services/contact_service.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:bloc_test/bloc_test.dart';
+
+void main() {
+  group('ContactBloc', () {
+    blocTest<ContactBloc, ContactState>(
+      'Sorting by Name emits SortedByName and ContactLoaded',
+      build: () => ContactBloc(ContactService()),
+      act: (bloc) => bloc.add(SortByName()),
+      expect: () => [
+        isA<SortedByName>(),
+        isA<ContactLoaded>(),
+      ],
+    );
+
+    blocTest<ContactBloc, ContactState>(
+      'Sorting by ID emits SortedById and ContactLoaded',
+      build: () => ContactBloc(ContactService()),
+      act: (bloc) => bloc.add(SortById()),
+      expect: () => [
+        isA<SortedById>(),
+        isA<ContactLoaded>(),
+      ],
+    );
+  });
+}
+
