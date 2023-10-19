@@ -15,9 +15,9 @@ class _ContactListViewState extends State<ContactListView>
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<ContactBloc>(context).add(FetchContacts());
-    BlocProvider.of<ContactBloc>(context).add(InitialIDSortingEvent());
-    BlocProvider.of<ContactBloc>(context).add(InitialNameSortingEvent());
+    BlocProvider.of<ContactBloc>(context).add(FetchContacts()); //contacts
+    BlocProvider.of<ContactBloc>(context).add(InitialIDSortingEvent()); //true
+    BlocProvider.of<ContactBloc>(context).add(InitialNameSortingEvent()); //true
   }
 
   @override
@@ -30,7 +30,7 @@ class _ContactListViewState extends State<ContactListView>
           Expanded(
             child: GestureDetector(
               onTap: () {
-                BlocProvider.of<ContactBloc>(context).add(SortById());
+                BlocProvider.of<ContactBloc>(context).add(SortById());  //dispatcing 
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -121,6 +121,7 @@ class _ContactListViewState extends State<ContactListView>
                   itemBuilder: (context, index) {
                     return Card(
                       child: ListTile(
+                        leading: Text(state.contacts[index].id),
                         title: Text(
                           state.contacts[index].name,
                           style: const TextStyle(fontSize: 18.0),

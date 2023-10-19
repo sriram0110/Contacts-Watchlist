@@ -23,10 +23,8 @@ void main() {
     test('fetching getContacts() for successful response', () async {
       when(mockClient.get(Uri.parse(
               'http://5e53a76a31b9970014cf7c8c.mockapi.io/msf/getContacts')))
-          .thenAnswer((_) async => 
-              http.Response(responseBody, 200));
-      // expect(await contactService.getContacts(mockClient),
-      //     responseBody);
+          .thenAnswer((_) async => http.Response(responseBody, 200));
+
       final response = await contactService.getContacts(mockClient);
       final jsonData = jsonDecode(response);
       expect(jsonData, isNotEmpty);
@@ -36,12 +34,11 @@ void main() {
       when(mockClient.get(Uri.parse(
               'http://5e53a76a31b9970014cf7c8c.mockapi.io/msf/getContacts')))
           .thenAnswer((_) async => (http.Response('Not Found', 404)));
-      // expect( await contactService.getContacts(mockClient), throwsException);
       try {
         await contactService.getContacts(mockClient);
-        fail('Exception not thrown'); 
+        fail('Exception not thrown');
       } catch (e) {
-        expect(e, const TypeMatcher<Exception>()); 
+        expect(e, const TypeMatcher<Exception>());
       }
     });
   });
